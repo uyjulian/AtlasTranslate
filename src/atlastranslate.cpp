@@ -1,12 +1,10 @@
 #include "extension.h"
 #include <Shared/Shrink.h>
-#include <Shared/StringUtil.h>
-#include <Shared/ProcessUtil.h>
 #include <Shared/Atlas.h>
 
 struct AtlasConfig atlcfg;
 
-HANDLE mutex;
+std::mutex procMutex;
 
 bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
 {
@@ -14,32 +12,13 @@ bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
 		return false;
 	}
 
-	if (!mutex) {
-		mutex = CreateMutex(NULL, FALSE, NULL);
-		if (!mutex) {
-			return false;
-		}
-	}
-	bool waitingForMutex = true;
-	while (waitingForMutex) {
-		switch (WaitForSingleObject(mutex, INFINITE)) {
-			case WAIT_OBJECT_0: {
-				waitingForMutex = false;
-				break;
-			}
-			case WAIT_ABANDONED: {
-				return false;
-			}
-			default: {}
-		}
-	}
+	std::lock_guard<std::mutex> lock(procMutex);
 	if (!AtlasIsLoaded()) {
 		atlcfg.flags = ~BREAK_ON_SINGLE_LINE_BREAKS;
 		wcscpy(atlcfg.environment, L"Entertainment");
 		wcscpy(atlcfg.trsPath, L"");
 		InitAtlas(atlcfg, ATLAS_JAP_TO_ENG);
 		if (!AtlasIsLoaded()) {
-			ReleaseMutex(mutex);
 			return false;
 		}
 	}
@@ -49,7 +28,6 @@ bool ProcessSentence(std::wstring& sentence, SentenceInfo sentenceInfo)
 	sentence += text;
 	free(otext);
 	free(text);
-	ReleaseMutex(mutex);
 	return true;
 }
 
