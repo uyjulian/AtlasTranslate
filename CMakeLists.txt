@@ -28,5 +28,5 @@ set_property(TARGET AtlasTranslate PROPERTY CXX_STANDARD 17)
 
 if(WIN32)
 	target_compile_definitions(AtlasTranslate PUBLIC NO_ZLIB UNICODE _UNICODE)
-	target_link_options(AtlasTranslate PUBLIC -static -static-libgcc -static-libstdc++)
+	target_link_options(AtlasTranslate PUBLIC -static -static-libgcc -static-libstdc++ -municode)
 endif()
