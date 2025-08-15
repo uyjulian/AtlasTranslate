@@ -12,7 +12,7 @@
 #include <WinSock2.h>
 #endif
 #define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include <windows.h>
 #include <shellapi.h>
 #include <stdio.h>
 #ifndef NO_STD

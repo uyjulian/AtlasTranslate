@@ -4,3 +4,4 @@
 *.exe
 *.7z
 *.dll
+build-*/
