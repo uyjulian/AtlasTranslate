@@ -29,3 +29,5 @@ add_library(AtlasTranslate MODULE
 	src/Shared/TextRuleSet.cpp
 	src/Shared/EUCJPtoUTF16.cpp
 )
+
+set_property(TARGET AtlasTranslate PROPERTY CXX_STANDARD 17)
