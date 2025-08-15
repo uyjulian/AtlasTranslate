@@ -5,12 +5,6 @@ if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release)
 endif()
 
-if(WIN32)
-	add_definitions(-static -static-libgcc -static-libstdc++)
-endif()
-
-add_definitions(-DNO_ZLIB -DUNICODE -D_UNICODE)
-
 set(CMAKE_SHARED_MODULE_PREFIX "")
 
 include_directories(
@@ -31,3 +25,8 @@ add_library(AtlasTranslate MODULE
 )
 
 set_property(TARGET AtlasTranslate PROPERTY CXX_STANDARD 17)
+
+if(WIN32)
+	target_compile_definitions(AtlasTranslate PUBLIC NO_ZLIB UNICODE _UNICODE)
+	target_link_options(AtlasTranslate PUBLIC -static -static-libgcc -static-libstdc++)
+endif()
